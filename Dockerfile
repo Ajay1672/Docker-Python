@@ -1,20 +1,15 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+FROM --platform=$BUILDPLATFORM python:3.10-alpine AS builder
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy the current directory contents into the container at /usr/src/app
-COPY . .
+COPY requirements.txt /app
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py /app
 
-# Make port 5000 available to the world outside this container
+RUN pip3 install -r requirements.txt
+
 EXPOSE 8000
 
-# Define environment variable
-ENV FLASK_APP=app.py
+ENTRYPOINT ["python3"]
 
-# Run the application
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+CMD ["app.py"]
